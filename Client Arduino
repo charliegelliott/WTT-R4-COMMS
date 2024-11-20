@@ -1,24 +1,54 @@
 #include <WiFi.h>
 
-const char *ssid = "Host";       //Access point ssid
-const char *pass = "VTWTT"; //Access point password
+//Access Point creds
+const char *ssid = "Host";
+const char *pass = "VTWTT";
+
+//Server IP and port match access point
+IPAddress serverIP(192, 168, 4, 1); //Default IP 
+const int serverPort = 80;
+
+WiFiClient client;
 
 void setup() {
     Serial.begin(115200);
 
     //Connect to Access Point
+    Serial.println("Connecting to Wi-Fi...");
     WiFi.begin(ssid, pass);
 
     while (WiFi.status() != WL_CONNECTED) {
         delay(1000);
-        Serial.println("Connecting to Wi-Fi...");
+        Serial.println("Connecting...");
     }
 
     Serial.println("Connected to Wi-Fi");
-    Serial.print("IP Address: ");
-    Serial.println(WiFi.localIP()); //Display client IP
+    Serial.print("Client IP Address: ");
+    Serial.println(WiFi.localIP());
 }
 
 void loop() {
-    //Code to handle sending/recieveing data here
+    if (client.connect(serverIP, serverPort)) {
+        Serial.println("Connected to server");
+
+        //Send test message to the server
+        client.println("Hello from Client");
+
+        //Wait for response
+        while (client.connected()) {
+            if (client.available()) {
+                String response = client.readStringUntil('\n');
+                Serial.print("Server response: ");
+                Serial.println(response);
+                break; //Stop after receiving one message
+            }
+        }
+
+        client.stop();
+        Serial.println("Disconnected from server");
+    } else {
+        Serial.println("Failed to connect to server");
+    }
+
+    delay(5000); //Wait before reconnecting
 }
