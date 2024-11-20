@@ -1,19 +1,40 @@
 #include <WiFi.h>
-//Install wifi library: R4HttpClient????? (WifiS3)
-const char *ssid = "Host";       //Access point ssid
-const char *pass = "VTWTT"; //Acces point password
+
+// Access Point credentials
+const char *ssid = "Host";
+const char *pass = "VTWTT";
+
+//Create a wifi server on port 80
+WiFiServer server(80);
 
 void setup() {
-    Serial.begin(115200);
+    Serial.begin(115200); //baud rate
 
-    //Start Wi-Fi in Access Point mode
+    //Start wifi in Access Point mode
     WiFi.softAP(ssid, pass);
 
-    Serial.println("Access Point Started");
+    Serial.println("Access Point started!");
     Serial.print("IP Address: ");
-    Serial.println(WiFi.softAPIP()); //Display the IP
+    Serial.println(WiFi.softAPIP());
+
+    //Start server
+    server.begin();
+    Serial.println("Server started!");
 }
 
 void loop() {
-    //Handle client connections 
+    WiFiClient client = server.available(); //Check for clients
+
+    if (client) {
+        Serial.println("Client connected");
+        while (client.connected()) {
+            if (client.available()) {
+                char c = client.read();       //Read data from client
+                Serial.write(c);             //Print it to the Serial Monitor
+                client.write("Message received!"); //Send acknowledgment
+            }
+        }
+        client.stop();
+        Serial.println("Client disconnected");
+    }
 }
