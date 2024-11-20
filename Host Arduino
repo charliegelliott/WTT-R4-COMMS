@@ -1,0 +1,19 @@
+#include <WiFi.h>
+//Install wifi library: R4HttpClient????? (WifiS3)
+const char *ssid = "Host";       //Access point ssid
+const char *pass = "VTWTT"; //Acces point password
+
+void setup() {
+    Serial.begin(115200);
+
+    //Start Wi-Fi in Access Point mode
+    WiFi.softAP(ssid, pass);
+
+    Serial.println("Access Point Started");
+    Serial.print("IP Address: ");
+    Serial.println(WiFi.softAPIP()); //Display the IP
+}
+
+void loop() {
+    //Handle client connections 
+}
