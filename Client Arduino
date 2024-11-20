@@ -1,7 +1,7 @@
 #include <WiFi.h>
 
-const char *ssid = "ArduinoAP";       //Access point ssid
-const char *pass = "password123"; //Access point password
+const char *ssid = "Host";       //Access point ssid
+const char *pass = "VTWTT"; //Access point password
 
 void setup() {
     Serial.begin(115200);
