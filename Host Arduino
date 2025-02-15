@@ -1,40 +1,66 @@
 #include <WiFi.h>
 
-// Access Point credentials
-const char *ssid = "Host";
-const char *pass = "VTWTT";
+const char *ssid = "Host";  //cant change ssid bt whatev
+const char *pass = "VTWTT"; //same w pass
+const int channel = 6;      //wifi channe;
 
-//Create a wifi server on port 80
 WiFiServer server(80);
 
 void setup() {
-    Serial.begin(115200); //baud rate
+    Serial.begin(115200);
+    Serial.println("🚀 Starting Host...");
 
-    //Start wifi in Access Point mode
-    WiFi.softAP(ssid, pass);
+    WiFi.disconnect();
+    delay(1000);
 
-    Serial.println("Access Point started!");
-    Serial.print("IP Address: ");
-    Serial.println(WiFi.softAPIP());
+    Serial.println("🌐 Attempting to start Access Point...");
 
-    //Start server
+    //Start AP Mode (ignore ssid, pass)
+    if (WiFi.beginAP(ssid, pass, channel)) {
+        Serial.println("✅ Access Point started successfully!");
+        Serial.print("AP IP Address: ");
+        Serial.println(WiFi.localIP());
+
+        //trying to change ssid to Host but doesnt work
+        delay(1000);  
+        Serial.print("Current SSID: ");
+        Serial.println(WiFi.SSID());
+
+        //restart AP to change ssid name but also doesnt work
+        if (String(WiFi.SSID()) != String(ssid)) {
+            Serial.println("⚠️ SSID did not set correctly. Restarting AP...");
+            WiFi.disconnect();
+            delay(2000);
+            WiFi.beginAP(ssid, pass, channel);
+            delay(1000);
+            Serial.print("Updated SSID: ");
+            Serial.println(WiFi.SSID());
+        }
+    } else {
+        Serial.println("❌ ERROR: Failed to start Access Point.");
+        while (true);
+    }
+
     server.begin();
-    Serial.println("Server started!");
+    Serial.println("🌍 Server started!");
 }
 
 void loop() {
-    WiFiClient client = server.available(); //Check for clients
+    Serial.println("📡 Waiting for a client...");
+    WiFiClient client = server.available();
 
     if (client) {
-        Serial.println("Client connected");
+        Serial.println("✅ Client connected!");
         while (client.connected()) {
             if (client.available()) {
-                char c = client.read();       //Read data from client
-                Serial.write(c);             //Print it to the Serial Monitor
-                client.write("Message received!"); //Send acknowledgment
+                char c = client.read();
+                Serial.write(c);
+                client.write("Message received!"); //send msg back to client
             }
         }
-        client.stop();
-        Serial.println("Client disconnected");
+        //client.stop();
+        //Serial.println("❌ Client disconnected.");
     }
+
+    delay(1000);
 }
