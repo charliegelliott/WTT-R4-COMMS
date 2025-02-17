@@ -1,6 +1,6 @@
 #include <WiFi.h>
 
-const char *ssid = "ESP_658E10";
+const char *ssid = "ESP_658E10"; //default ssid for host wifi
 
 
 //Set static IP for the client
@@ -9,7 +9,7 @@ IPAddress gateway(192, 168, 4, 1);
 IPAddress subnet(255, 255, 255, 0);
 
 IPAddress serverIP(192, 168, 4, 1); //Host's IP
-const int serverPort = 80;
+const int serverPort = 80; //http port
 
 WiFiClient client;
 
@@ -34,7 +34,7 @@ void setup() {
     }
 
     if (WiFi.status() == WL_CONNECTED) {
-        Serial.println("✅ Connected to Wi-Fi!");
+        Serial.println("✅ Connected to Wi-Fi");
         Serial.print("📡 Client IP Address: ");
         Serial.println(WiFi.localIP());
     } else {
