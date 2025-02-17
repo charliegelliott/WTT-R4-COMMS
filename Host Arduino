@@ -17,7 +17,7 @@ void setup() {
 
     //Start AP Mode (ignore ssid, pass)
     if (WiFi.beginAP(ssid, pass, channel)) {
-        Serial.println("✅ Access Point started successfully!");
+        Serial.println("✅ Access Point started");
         Serial.print("AP IP Address: ");
         Serial.println(WiFi.localIP());
 
@@ -42,7 +42,7 @@ void setup() {
     }
 
     server.begin();
-    Serial.println("🌍 Server started!");
+    Serial.println("🌍 Server started");
 }
 
 void loop() {
@@ -50,16 +50,16 @@ void loop() {
     WiFiClient client = server.available();
 
     if (client) {
-        Serial.println("✅ Client connected!");
+        Serial.println("✅ Client connected");
         while (client.connected()) {
             if (client.available()) {
                 char c = client.read();
                 Serial.write(c);
-                client.write("Message received!"); //send msg back to client
+                client.write("Message received!!!!!!"); //send msg back to client
             }
         }
         //client.stop();
-        //Serial.println("❌ Client disconnected.");
+        //Serial.println("❌ Client disconnected");
     }
 
     delay(1000);
